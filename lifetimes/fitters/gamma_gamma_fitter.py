@@ -72,6 +72,10 @@ class GammaGammaFitter(BaseFitter):
         Initialization, set penalizer_coef.
         """
 
+        # scipy.optimize.minimize will pass a float as a 1d array
+        if isinstance(penalizer_coef, np.ndarray):
+            penalizer_coef = penalizer_coef.item()
+
         self.penalizer_coef = penalizer_coef
 
     @staticmethod
