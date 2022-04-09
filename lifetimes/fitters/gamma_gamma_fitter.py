@@ -167,6 +167,7 @@ class GammaGammaFitter(BaseFitter):
         tol=1e-7,
         index=None,
         q_constraint=False,
+        fit_method=None,
         **kwargs
     ):
         """
@@ -228,6 +229,7 @@ class GammaGammaFitter(BaseFitter):
             verbose,
             tol=tol,
             bounds=((None, None), (0, None), (None, None)) if q_constraint else None,
+            fit_method=fit_method,
             **kwargs
         )
 

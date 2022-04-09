@@ -56,7 +56,7 @@ class ModifiedBetaGeoFitter(BetaGeoFitter):
         super(ModifiedBetaGeoFitter, self).__init__(penalizer_coef)
 
     def fit(
-        self, frequency, recency, T, weights=None, initial_params=None, verbose=False, tol=1e-7, index=None, **kwargs
+        self, frequency, recency, T, weights=None, initial_params=None, verbose=False, tol=1e-7, index=None, fit_method=None, **kwargs
     ):
         """
         Fit the data to the MBG/NBD model.
@@ -100,7 +100,7 @@ class ModifiedBetaGeoFitter(BetaGeoFitter):
         # although the parent method is called, this class's
         # _negative_log_likelihood is referenced
         super(ModifiedBetaGeoFitter, self).fit(
-            frequency, recency, T, weights, initial_params, verbose, tol, index=index, **kwargs
+            frequency, recency, T, weights, initial_params, verbose, tol, index=index, fit_method=fit_method, **kwargs
         )
         # this needs to be reassigned from the parent method
         self.generate_new_data = lambda size=1: modified_beta_geometric_nbd_model(

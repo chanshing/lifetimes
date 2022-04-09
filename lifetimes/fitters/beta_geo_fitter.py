@@ -76,7 +76,8 @@ class BetaGeoFitter(BaseFitter):
         initial_params=None, 
         verbose=False, 
         tol=1e-7, 
-        index=None, 
+        index=None,
+        fit_method=None,
         **kwargs
     ):
         """
@@ -140,6 +141,7 @@ class BetaGeoFitter(BaseFitter):
             4,
             verbose,
             tol,
+            fit_method=fit_method,
             **kwargs
         )
 

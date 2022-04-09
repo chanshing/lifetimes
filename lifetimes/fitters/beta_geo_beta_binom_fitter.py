@@ -105,6 +105,7 @@ class BetaGeoBetaBinomFitter(BaseFitter):
         verbose=False,
         tol=1e-7,
         index=None,
+        fit_method=None,
         **kwargs
     ):
         """
@@ -156,8 +157,15 @@ class BetaGeoBetaBinomFitter(BaseFitter):
         _check_inputs(frequency, recency, n_periods)
 
         log_params_, self._negative_log_likelihood_, self._hessian_ = self._fit(
-            (frequency, recency, n_periods, weights, self.penalizer_coef), initial_params, 4, verbose, tol, **kwargs
+            (frequency, recency, n_periods, weights, self.penalizer_coef),
+            initial_params,
+            4,
+            verbose,
+            tol,
+            fit_method=fit_method,
+            **kwargs
         )
+
         self.params_ = pd.Series(np.exp(log_params_), index=["alpha", "beta", "gamma", "delta"])
 
         self.data = DataFrame(

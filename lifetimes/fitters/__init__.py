@@ -91,23 +91,25 @@ class BaseFitter(object):
             index=self.params_.index,
         )
 
-    def _fit(self, minimizing_function_args, initial_params, params_size, disp, tol=1e-7, bounds=None, **kwargs):
+    def _fit(self, minimizing_function_args, initial_params, params_size, disp, tol=1e-7, bounds=None, fit_method=None, **kwargs):
         # set options for minimize, if specified in kwargs will be overwritten
         minimize_options = {}
         minimize_options["disp"] = disp
         minimize_options.update(kwargs)
 
         current_init_params = 0.1 * np.ones(params_size) if initial_params is None else initial_params
-        output = minimize(
-            value_and_grad(self._negative_log_likelihood),
-            jac=True,
-            method=None,
-            tol=tol,
-            x0=current_init_params,
-            args=minimizing_function_args,
-            options=minimize_options,
-            bounds=bounds,
-        )
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message="Method .* does not use gradient information \(jac\)")
+            output = minimize(
+                value_and_grad(self._negative_log_likelihood),
+                jac=True,
+                tol=tol,
+                x0=current_init_params,
+                args=minimizing_function_args,
+                options=minimize_options,
+                bounds=bounds,
+                method=fit_method,
+            )
         if output.success:
             hessian_ = hessian(self._negative_log_likelihood)(output.x, *minimizing_function_args)
             return output.x, output.fun, hessian_
