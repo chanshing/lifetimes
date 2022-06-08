@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Base fitter for other classes."""
 import warnings
-
-warnings.simplefilter(action="ignore", category=FutureWarning)
+import logging
+import traceback
 import dill
 import numpy as np
 import pandas as pd
@@ -10,6 +10,10 @@ from textwrap import dedent
 from scipy.optimize import minimize
 from autograd import value_and_grad, hessian
 from ..utils import _save_obj_without_attr, ConvergenceError
+
+warnings.simplefilter(action="ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", message=r"Method .* does not use gradient information \(jac\)")
+np.seterr(divide="raise", invalid="raise")
 
 
 class BaseFitter(object):
@@ -98,8 +102,8 @@ class BaseFitter(object):
         minimize_options.update(kwargs)
 
         current_init_params = 0.1 * np.ones(params_size) if initial_params is None else initial_params
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", message="Method .* does not use gradient information \(jac\)")
+
+        try:
             output = minimize(
                 value_and_grad(self._negative_log_likelihood),
                 jac=True,
@@ -110,17 +114,26 @@ class BaseFitter(object):
                 bounds=bounds,
                 method=fit_method,
             )
-        if output.success:
-            hessian_ = hessian(self._negative_log_likelihood)(output.x, *minimizing_function_args)
+        except Exception:
+            output = None
+            # logging.error(traceback.format_exc())
+
+        if output is not None and output.success:
+            try:
+                hessian_ = hessian(self._negative_log_likelihood)(output.x, *minimizing_function_args)
+            except Exception:
+                hessian_ = None
+                # logging.error(traceback.format_exc())
             return output.x, output.fun, hessian_
-        print(output)
-        raise ConvergenceError(
-            dedent(
+
+        else:
+            raise ConvergenceError(
+                dedent(
+                    """
+                The model did not converge. Try adding a larger penalizer to see if that helps convergence.
                 """
-            The model did not converge. Try adding a larger penalizer to see if that helps convergence.
-            """
+                )
             )
-        )
 
     @property
     def summary(self):
