@@ -65,7 +65,7 @@ class GammaGammaFitter(BaseFitter):
     """
 
     def __init__(
-        self, 
+        self,
         penalizer_coef=0.0
     ):
         """
@@ -80,10 +80,10 @@ class GammaGammaFitter(BaseFitter):
 
     @staticmethod
     def _negative_log_likelihood(
-        log_params, 
-        frequency, 
-        avg_monetary_value, 
-        weights, 
+        log_params,
+        frequency,
+        avg_monetary_value,
+        weights,
         penalizer_coef
     ):
         """
@@ -119,8 +119,8 @@ class GammaGammaFitter(BaseFitter):
         return -negative_log_likelihood_values.sum() / weights.sum() + penalizer_term
 
     def conditional_expected_average_profit(
-        self, 
-        frequency=None, 
+        self,
+        frequency=None,
         monetary_value=None
     ):
         """
@@ -171,6 +171,7 @@ class GammaGammaFitter(BaseFitter):
         tol=1e-7,
         index=None,
         q_constraint=False,
+        bounds=None,
         fit_method=None,
         **kwargs
     ):
@@ -232,7 +233,7 @@ class GammaGammaFitter(BaseFitter):
             3,
             verbose,
             tol=tol,
-            bounds=((None, None), (0, None), (None, None)) if q_constraint else None,
+            bounds=((None, None), (0, None), (None, None)) if q_constraint else bounds,
             fit_method=fit_method,
             **kwargs
         )
@@ -250,14 +251,14 @@ class GammaGammaFitter(BaseFitter):
         return self
 
     def customer_lifetime_value(
-        self, 
-        transaction_prediction_model, 
-        frequency, 
-        recency, 
-        T, 
-        monetary_value, 
-        time=12, 
-        discount_rate=0.01, 
+        self,
+        transaction_prediction_model,
+        frequency,
+        recency,
+        T,
+        monetary_value,
+        time=12,
+        discount_rate=0.01,
         freq="D"
     ):
         """
