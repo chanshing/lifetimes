@@ -182,6 +182,7 @@ class BetaGeoBetaBinomFitter(BaseFitter):
         self.variance_matrix_ = self._compute_variance_matrix()
         self.standard_errors_ = self._compute_standard_errors()
         self.confidence_intervals_ = self._compute_confidence_intervals()
+
         return self
 
     def conditional_expected_number_of_purchases_up_to_time(self, m_periods_in_future, frequency, recency, n_periods):

@@ -76,14 +76,33 @@ class BaseFitter(object):
 
     def _compute_variance_matrix(self):
         params_ = self.params_
-        return pd.DataFrame(
-            (params_ ** 2).values * np.linalg.inv(self._hessian_) / self.data["weights"].sum(),
+
+        try:
+            variance_matrix = (
+                (params_ ** 2).to_numpy() 
+                * np.linalg.inv(self._hessian_) 
+                / self.data["weights"].sum()
+            )
+
+        except np.linalg.LinAlgError:
+            warnings.warn("Hessian could not be inverted")
+            variance_matrix = np.zeros_like(self._hessian_)
+
+        variance_matrix = pd.DataFrame(
+            variance_matrix,
             columns=params_.index,
             index=params_.index,
         )
 
+        return variance_matrix
+
     def _compute_standard_errors(self):
-        return np.sqrt(pd.Series(np.diag(self.variance_matrix_.values), index=self.params_.index))
+        with np.errstate(invalid='ignore'):  # ignore negative variance errors
+            standard_errors = pd.Series(
+                np.sqrt(np.diag(self.variance_matrix_.to_numpy())), 
+                index=self.params_.index,
+            )
+        return standard_errors
 
     def _compute_confidence_intervals(self):
         inv_cdf_at_5_confidence = 1.96

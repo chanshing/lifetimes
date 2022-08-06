@@ -110,6 +110,7 @@ class ModifiedBetaGeoFitter(BetaGeoFitter):
         self.variance_matrix_ = self._compute_variance_matrix()
         self.standard_errors_ = self._compute_standard_errors()
         self.confidence_intervals_ = self._compute_confidence_intervals()
+
         return self
 
     @staticmethod

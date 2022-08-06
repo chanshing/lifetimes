@@ -58,7 +58,7 @@ class BetaGeoFitter(BaseFitter):
     """
 
     def __init__(
-        self, 
+        self,
         penalizer_coef=0.0
     ):
         """
@@ -72,14 +72,14 @@ class BetaGeoFitter(BaseFitter):
         self.penalizer_coef = penalizer_coef
 
     def fit(
-        self, 
-        frequency, 
-        recency, 
-        T, 
-        weights=None, 
-        initial_params=None, 
-        verbose=False, 
-        tol=1e-7, 
+        self,
+        frequency,
+        recency,
+        T,
+        weights=None,
+        initial_params=None,
+        verbose=False,
+        tol=1e-7,
         index=None,
         fit_method=None,
         **kwargs
@@ -168,11 +168,11 @@ class BetaGeoFitter(BaseFitter):
 
     @staticmethod
     def _negative_log_likelihood(
-        log_params, 
-        freq, 
-        rec, 
-        T, 
-        weights, 
+        log_params,
+        freq,
+        rec,
+        T,
+        weights,
         penalizer_coef
     ):
         """
@@ -205,10 +205,10 @@ class BetaGeoFitter(BaseFitter):
         return -ll.sum() / weights.sum() + penalizer_term
 
     def conditional_expected_number_of_purchases_up_to_time(
-        self, 
-        t, 
-        frequency, 
-        recency, 
+        self,
+        t,
+        frequency,
+        recency,
         T
     ):
         """
@@ -264,9 +264,9 @@ class BetaGeoFitter(BaseFitter):
         return numerator / denominator
 
     def conditional_probability_alive(
-        self, 
-        frequency, 
-        recency, 
+        self,
+        frequency,
+        recency,
         T
     ):
         """
@@ -301,8 +301,8 @@ class BetaGeoFitter(BaseFitter):
         return np.atleast_1d(np.where(frequency == 0, 1.0, expit(-log_div)))
 
     def conditional_probability_alive_matrix(
-        self, 
-        max_frequency=None, 
+        self,
+        max_frequency=None,
         max_recency=None
     ):
         """
@@ -332,7 +332,7 @@ class BetaGeoFitter(BaseFitter):
         ).T
 
     def expected_number_of_purchases_up_to_time(
-        self, 
+        self,
         t
     ):
         """
@@ -365,8 +365,8 @@ class BetaGeoFitter(BaseFitter):
         return (a + b - 1) / (a - 1) * (1 - hyp * (alpha / (alpha + t)) ** r)
 
     def probability_of_n_purchases_up_to_time(
-        self, 
-        t, 
+        self,
+        t,
         n
     ):
         r"""
